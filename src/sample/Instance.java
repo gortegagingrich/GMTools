@@ -15,6 +15,10 @@ public class Instance implements Comparable {
    protected String itemName;
    protected String creationCode;
 
+   public Instance() {
+
+   }
+
    public Instance(String[] str) {
 
    }
@@ -37,6 +41,15 @@ public class Instance implements Comparable {
 
    public void setCreationCode(String code) {
 
+   }
+
+   public void setItemName(String itemName) {
+      this.itemName = itemName;
+   }
+
+   public void setPosition(double x, double y) {
+      this.x = x;
+      this.y = y;
    }
 
    @Override
