@@ -1,0 +1,85 @@
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.canvas.Canvas?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import org.fxmisc.richtext.CodeArea?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.geometry.Insets?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.layout.Background?>
+<?import javafx.scene.SubScene?>
+<AnchorPane fx:controller="sample.Controller"
+            xmlns:fx="http://javafx.com/fxml" >
+
+    <TabPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+             AnchorPane.topAnchor="0" fx:id="tabPane">
+        <VBox.margin>
+            <Insets bottom="0"/>
+        </VBox.margin>
+        <Tab text="Room Editor">
+            <VBox>
+                <MenuBar>
+                    <Menu text="_File">
+                        <MenuItem text="_New" fx:id="newClear"/>
+                        <Menu text="_Import">
+                            <MenuItem text="_GML script"/>
+                            <MenuItem text="._room.gmx"/>
+                            <MenuItem text="_JMap"/>
+                            <MenuItem text="RMJ _Map"/>
+                        </Menu>
+                        <Menu text="_Export">
+                            <MenuItem text="_GML script"/>
+                            <MenuItem text="._room.gmx"/>
+                            <MenuItem text="_JMap"/>
+                            <MenuItem text="RMJ _Map"/>
+                        </Menu>
+
+                        <SeparatorMenuItem/>
+                        <MenuItem text="E_xit" fx:id="exit" onAction="#exit"/>
+                    </Menu>
+
+                    <Menu text="_Edit">
+                        <MenuItem text="Goto _Line..." onAction="#codeAreaGoTo" fx:id="gotoItem"/>
+
+                    </Menu>
+
+                    <Menu text="_Display">
+                        <MenuItem text="_Refresh"/>
+                        <SeparatorMenuItem/>
+                        <MenuItem text="Adjust _Grid..."/>
+                        <MenuItem text="Resize _Canvas..." onAction="#resizeDrawingCanvas"/>
+                    </Menu>
+                </MenuBar>
+
+                <AnchorPane prefWidth="1200" prefHeight="608">
+                    <CodeArea fx:id="code" prefHeight="608" prefWidth="400" AnchorPane.leftAnchor="0.0"
+                              AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" wrapText="true"/>
+
+                    <ScrollPane
+                                prefWidth="800" prefHeight="608" fitToWidth="true" pannable="true"
+                                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"
+                                AnchorPane.bottomAnchor="0.0" hbarPolicy="NEVER" vbarPolicy="NEVER">
+                        <Canvas fx:id="img" width="800" height="608"/>
+                    </ScrollPane>
+                </AnchorPane>
+            </VBox>
+        </Tab>
+        <Tab>
+        </Tab>
+        <Tab text="+" closable="false" fx:id="plusTab">
+
+        </Tab>
+    </TabPane>
+</AnchorPane>
