@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -40,6 +41,8 @@ public class Controller implements Initializable {
 
    @Override
    public void initialize(URL location, ResourceBundle resources) {
+      Instance.init();
+
       gc = img.getGraphicsContext2D();
       gc.setFill(Color.BLACK);
 
@@ -49,6 +52,7 @@ public class Controller implements Initializable {
       });
 
       resetCanvas();
+      drawImages();
       drawGrid();
 
       code.setParagraphGraphicFactory(LineNumberFactory.get(code));
@@ -92,6 +96,23 @@ public class Controller implements Initializable {
       }
 
       gc.setGlobalAlpha(1);
+   }
+
+   private void drawImages() {
+      int x,y;
+
+      x = 256;
+      y = 256;
+
+      for (Image img: Instance.images.values()) {
+         gc.drawImage(img,x,y);
+         x += 32;
+
+         if (x > 600) {
+            x = 256;
+            y += 32;
+         }
+      }
    }
 
    @FXML

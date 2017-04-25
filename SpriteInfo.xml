@@ -1,0 +1,18 @@
+<root>
+    <sprite id="objBlock" img="sprites/block.png"/>
+    <sprite id="objMiniBlock" img="sprites/miniblock.png"/>
+    <sprite id="objMiniDown" img="sprites/minidown.png"/>
+    <sprite id="objMiniLeft" img="sprites/minileft.png"/>
+    <sprite id="objMiniRight" img="sprites/miniright.png"/>
+    <sprite id="objMiniUp" img="sprites/miniup.png"/>
+    <sprite id="objSave" img="sprites/save.png"/>
+    <sprite id="objSpikeDown" img="sprites/spikedown.png"/>
+    <sprite id="objSpikeLeft" img="sprites/spikeleft.png"/>
+    <sprite id="objSpikeRight" img="sprites/spikeright.png"/>
+    <sprite id="objSpikeUp" img="sprites/spikeup.png"/>
+    <sprite id="objWarp" img="sprites/warp.png"/>
+    <sprite id="objWarpAutosaveNext" img="sprites/warp.png"/>
+    <sprite id="objWater" img="sprites/water2.png"/>
+    <sprite id="objWater2" img="sprites/water2.png"/>
+    <sprite id="objCherry" img="sprites/cherry.png"/>
+</root>

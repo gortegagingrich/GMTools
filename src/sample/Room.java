@@ -49,7 +49,9 @@ public class Room {
 
    public void merge(Room room, int xOffset, int yOffset) {
       for (Instance instance : room.instances) {
+         instance.move(xOffset, yOffset);
          addInstance(instance);
+
       }
 
    }
