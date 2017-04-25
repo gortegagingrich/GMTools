@@ -16,10 +16,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.geometry.Insets?>
 
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.layout.Background?>
-<?import javafx.scene.SubScene?>
 <AnchorPane fx:controller="sample.Controller"
             xmlns:fx="http://javafx.com/fxml" >
 
@@ -57,6 +53,7 @@
 
                     <Menu text="_Display">
                         <MenuItem text="_Refresh"/>
+                        <MenuItem text="Reload _Images" onAction="#reloadImages"/>
                         <SeparatorMenuItem/>
                         <MenuItem text="Adjust _Grid..."/>
                         <MenuItem text="Resize _Canvas..." onAction="#resizeDrawingCanvas"/>

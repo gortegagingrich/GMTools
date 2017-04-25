@@ -16,15 +16,15 @@ import java.util.HashMap;
  * Created by Gabriel on 2017/03/21.
  */
 public class Instance implements Comparable {
-   public static HashMap<String, Image> images;
+   public static HashMap<String, Object[]> images = null;
 
-   protected double x,y;
-   protected double[] xArr, yArr;
-   protected double xScale, yScale;
-   protected Paint color1, color2;
-   protected int depth;
-   protected String itemName;
-   protected String creationCode;
+   private double x,y;
+   private double[] xArr, yArr;
+   private double xScale, yScale;
+   private Paint color1, color2;
+   private int    depth;
+   private String itemName;
+   private String creationCode;
 
    public Instance() {
 
@@ -41,21 +41,26 @@ public class Instance implements Comparable {
    public void draw(Canvas c) {
       GraphicsContext gc = c.getGraphicsContext2D();
 
-      // keep track of previous stroke and fill values
-      Paint temp1 = gc.getFill();
-      Paint temp2 = gc.getStroke();
+      if (images.containsKey(itemName)) { // if there is an image defined for this kind of instance
+         Object[] img = images.get(itemName);
+         gc.drawImage((Image)img[1], x + (Integer)img[2], y + (Integer)img[3]);
+      } else { // if there is no image defined for this kind of instance
+         // keep track of previous stroke and fill values
+         Paint temp1 = gc.getFill();
+         Paint temp2 = gc.getStroke();
 
-      // draw fill
-      gc.setFill(color2);
-      gc.fillPolygon(xArr, yArr, yArr.length);
+         // draw fill
+         gc.setFill(color2);
+         gc.fillPolygon(xArr, yArr, yArr.length);
 
-      // draw outline
-      gc.setStroke(color1);
-      gc.strokePolygon(xArr, yArr, yArr.length);
+         // draw outline
+         gc.setStroke(color1);
+         gc.strokePolygon(xArr, yArr, yArr.length);
 
-      // reset fill and stroke
-      gc.setFill(temp1);
-      gc.setStroke(temp2);
+         // reset fill and stroke
+         gc.setFill(temp1);
+         gc.setStroke(temp2);
+      }
    }
 
    private void setColors(Paint border, Paint fill) {
@@ -105,18 +110,48 @@ public class Instance implements Comparable {
       Element imageInfo;
       SAXBuilder builder = new SAXBuilder();
 
+      if (images != null) {
+         images.clear();
+      }
+
       images = new HashMap<>();
 
       try {
          imageInfo = builder.build(new File("SpriteInfo.xml")).getRootElement();
 
          imageInfo.getChildren().forEach(spr -> {
-            Image img;
+            Image img = null;
             String str;
+            String path;
+            int xOffset, yOffset;
 
+            // set id
             str = spr.getAttributeValue("id");
-            img = new Image((new File(spr.getAttributeValue("img"))).toURI().toString());
-            images.put(str,img);
+
+            // set the image
+            path = spr.getAttributeValue("img");
+
+            // determine whether or not another instance is mapped to the same image file
+            for (Object[] i: images.values()) {
+
+               // if it finds a match, set img to reference to preexisting image
+               if (i[0].equals(path)) {
+                  img = (Image) i[1];
+                  break;
+               }
+            }
+
+            // if img has not been initialized by now, it's safe to create a new Image
+            if (img == null) {
+               img = new Image((new File(spr.getAttributeValue("img")))
+                                       .toURI().toString());
+            }
+
+            // set offsets
+            xOffset = Integer.parseInt(spr.getAttributeValue("xOffset"));
+            yOffset = Integer.parseInt(spr.getAttributeValue("yOffset"));
+
+            images.put(str,new Object[] {path, img, xOffset, yOffset});
          });
       } catch (JDOMException e) {
          e.printStackTrace();

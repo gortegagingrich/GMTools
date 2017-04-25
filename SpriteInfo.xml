@@ -1,18 +1,18 @@
 <root>
-    <sprite id="objBlock" img="sprites/block.png"/>
-    <sprite id="objMiniBlock" img="sprites/miniblock.png"/>
-    <sprite id="objMiniDown" img="sprites/minidown.png"/>
-    <sprite id="objMiniLeft" img="sprites/minileft.png"/>
-    <sprite id="objMiniRight" img="sprites/miniright.png"/>
-    <sprite id="objMiniUp" img="sprites/miniup.png"/>
-    <sprite id="objSave" img="sprites/save.png"/>
-    <sprite id="objSpikeDown" img="sprites/spikedown.png"/>
-    <sprite id="objSpikeLeft" img="sprites/spikeleft.png"/>
-    <sprite id="objSpikeRight" img="sprites/spikeright.png"/>
-    <sprite id="objSpikeUp" img="sprites/spikeup.png"/>
-    <sprite id="objWarp" img="sprites/warp.png"/>
-    <sprite id="objWarpAutosaveNext" img="sprites/warp.png"/>
-    <sprite id="objWater" img="sprites/water2.png"/>
-    <sprite id="objWater2" img="sprites/water2.png"/>
-    <sprite id="objCherry" img="sprites/cherry.png"/>
+    <sprite id="objBlock" img="sprites/block.png" xOffset="0" yOffset="0"/>
+    <sprite id="objMiniBlock" img="sprites/miniblock.png" xOffset="0" yOffset="0"/>
+    <sprite id="objMiniDown" img="sprites/minidown.png" xOffset="0" yOffset="0"/>
+    <sprite id="objMiniLeft" img="sprites/minileft.png" xOffset="0" yOffset="0"/>
+    <sprite id="objMiniRight" img="sprites/miniright.png" xOffset="0" yOffset="0"/>
+    <sprite id="objMiniUp" img="sprites/miniup.png" xOffset="0" yOffset="0"/>
+    <sprite id="objSave" img="sprites/save.png" xOffset="0" yOffset="0"/>
+    <sprite id="objSpikeDown" img="sprites/spikedown.png" xOffset="0" yOffset="0"/>
+    <sprite id="objSpikeLeft" img="sprites/spikeleft.png" xOffset="0" yOffset="0"/>
+    <sprite id="objSpikeRight" img="sprites/spikeright.png" xOffset="0" yOffset="0"/>
+    <sprite id="objSpikeUp" img="sprites/spikeup.png" xOffset="0" yOffset="0"/>
+    <sprite id="objWarp" img="sprites/warp.png" xOffset="0" yOffset="0"/>
+    <sprite id="objWarpAutosaveNext" img="sprites/warp.png" xOffset="0" yOffset="0"/>
+    <sprite id="objWater" img="sprites/water2.png" xOffset="0" yOffset="0"/>
+    <sprite id="objWater2" img="sprites/water2.png" xOffset="0" yOffset="0"/>
+    <sprite id="objCherry" img="sprites/cherry.png" xOffset="-10" yOffset="-12"/>
 </root>

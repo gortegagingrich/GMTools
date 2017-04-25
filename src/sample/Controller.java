@@ -1,8 +1,5 @@
 package sample;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -64,15 +61,13 @@ public class Controller implements Initializable {
       tid = new TextInputDialog();
       tid.setTitle("Goto Line");
 
-      tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
-         public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
-            if (newTab.getText() != null && newTab.getText().equals("+")) {
-               Tab tab = new Tab("test");
-               tabPane.getTabs().remove(plusTab);
-               tabPane.getTabs().add(tab);
-               tabPane.getTabs().add(plusTab);
-               tabPane.getSelectionModel().select(tab);
-            }
+      tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+         if (newTab.getText() != null && newTab.getText().equals("+")) {
+            Tab tab = new Tab("test");
+            tabPane.getTabs().remove(plusTab);
+            tabPane.getTabs().add(tab);
+            tabPane.getTabs().add(plusTab);
+            tabPane.getSelectionModel().select(tab);
          }
       });
    }
@@ -98,14 +93,22 @@ public class Controller implements Initializable {
       gc.setGlobalAlpha(1);
    }
 
+   @FXML
+   private void reloadImages() {
+      Instance.init();
+      resetCanvas();
+      drawGrid();
+      drawImages();
+   }
+
    private void drawImages() {
       int x,y;
 
       x = 256;
       y = 256;
 
-      for (Image img: Instance.images.values()) {
-         gc.drawImage(img,x,y);
+      for (Object[] img: Instance.images.values()) {
+         gc.drawImage((Image)img[1],x + (Integer)img[2],y + (Integer)img[3]);
          x += 32;
 
          if (x > 600) {
@@ -121,7 +124,7 @@ public class Controller implements Initializable {
    }
 
    @FXML
-   public void codeAreaGoTo(ActionEvent actionEvent) {
+   public void codeAreaGoTo() {
       tid.setHeaderText("");
       tid.getEditor().setText(Integer.toString(code.getCurrentParagraph()+1));
 
@@ -144,7 +147,7 @@ public class Controller implements Initializable {
    }
 
    @FXML
-   private void exit(ActionEvent actionEvent) {
+   private void exit() {
       Stage stage = (Stage)img.getScene().getWindow();
       stage.close();
    }
