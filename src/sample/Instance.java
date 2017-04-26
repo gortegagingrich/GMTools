@@ -26,8 +26,17 @@ public class Instance implements Comparable {
    private String itemName;
    private String creationCode;
 
-   public Instance() {
+   public Instance(String itemName, int x, int y) {
+      this.itemName = itemName;
+      this.x = x;
+      this.y = y;
 
+      depth = 0;
+      xArr = null;
+      yArr = null;
+      xScale = 1;
+      yScale = 1;
+      creationCode = "";
    }
 
    /**
@@ -35,15 +44,18 @@ public class Instance implements Comparable {
     * @param str {objectID, X, Y}
     */
    public Instance(String[] str) {
-
+      this(str[0], Integer.parseInt(str[1]), Integer.parseInt(str[2]));
    }
 
-   public void draw(Canvas c) {
-      GraphicsContext gc = c.getGraphicsContext2D();
+   public Instance() {
+      this("",0,0);
+   }
+
+   public void draw(GraphicsContext gc) {
 
       if (images.containsKey(itemName)) { // if there is an image defined for this kind of instance
          Object[] img = images.get(itemName);
-         gc.drawImage((Image)img[1], x + (Integer)img[2], y + (Integer)img[3]);
+         gc.drawImage((Image)img[1], x + (Integer)img[2] * xScale, y + (Integer)img[3] * yScale, (Integer)img[4] * xScale, (Integer)img[5] * yScale);
       } else { // if there is no image defined for this kind of instance
          // keep track of previous stroke and fill values
          Paint temp1 = gc.getFill();
@@ -123,7 +135,7 @@ public class Instance implements Comparable {
             Image img = null;
             String str;
             String path;
-            int xOffset, yOffset;
+            int xOffset, yOffset, width, height;
 
             // set id
             str = spr.getAttributeValue("id");
@@ -151,7 +163,10 @@ public class Instance implements Comparable {
             xOffset = Integer.parseInt(spr.getAttributeValue("xOffset"));
             yOffset = Integer.parseInt(spr.getAttributeValue("yOffset"));
 
-            images.put(str,new Object[] {path, img, xOffset, yOffset});
+            width = Integer.parseInt(spr.getAttributeValue("width"));
+            height = Integer.parseInt(spr.getAttributeValue("height"));
+
+            images.put(str,new Object[] {path, img, xOffset, yOffset, width, height});
          });
       } catch (JDOMException e) {
          e.printStackTrace();

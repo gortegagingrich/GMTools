@@ -5,19 +5,21 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.NavigationActions;
+
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
    private GraphicsContext gc;
-   private TextInputDialog tid;
+   private ArrayList<Instance> list;
 
    @FXML
    private Canvas   img;
@@ -32,20 +34,23 @@ public class Controller implements Initializable {
    @FXML
    private MenuItem gotoItem;
    @FXML
-   private Tab plusTab;
+   private Tab      plusTab;
    @FXML
-   private TabPane tabPane;
+   private TabPane  tabPane;
 
    @Override
    public void initialize(URL location, ResourceBundle resources) {
       Instance.init();
+      initInstances();
 
       gc = img.getGraphicsContext2D();
       gc.setFill(Color.BLACK);
 
       // make sure it only pans with middle mouse button
       img.addEventHandler(MouseEvent.ANY, event -> {
-         if(event.getButton() != MouseButton.MIDDLE) event.consume();
+         if (event.getButton() != MouseButton.MIDDLE) {
+            event.consume();
+         }
       });
 
       resetCanvas();
@@ -58,18 +63,17 @@ public class Controller implements Initializable {
 
       gotoItem.setAccelerator(new KeyCodeCombination(KeyCode.G, KeyCombination.CONTROL_DOWN));
 
-      tid = new TextInputDialog();
-      tid.setTitle("Goto Line");
-
-      tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
-         if (newTab.getText() != null && newTab.getText().equals("+")) {
-            Tab tab = new Tab("test");
-            tabPane.getTabs().remove(plusTab);
-            tabPane.getTabs().add(tab);
-            tabPane.getTabs().add(plusTab);
-            tabPane.getSelectionModel().select(tab);
-         }
-      });
+      tabPane.getSelectionModel()
+              .selectedItemProperty()
+              .addListener((observable, oldTab, newTab) -> {
+                 if (newTab.getText() != null && newTab.getText().equals("+")) {
+                    Tab tab = new Tab("test");
+                    tabPane.getTabs().remove(plusTab);
+                    tabPane.getTabs().add(tab);
+                    tabPane.getTabs().add(plusTab);
+                    tabPane.getSelectionModel().select(tab);
+                 }
+              });
    }
 
    private void resetCanvas() {
@@ -102,16 +106,24 @@ public class Controller implements Initializable {
    }
 
    private void drawImages() {
-      int x,y;
+      list.forEach(instance -> {
+         instance.draw(gc);
+      });
+   }
+
+   private void initInstances() {
+      int x, y;
+
+      list = new ArrayList<>();
 
       x = 256;
       y = 256;
 
-      for (Object[] img: Instance.images.values()) {
-         gc.drawImage((Image)img[1],x + (Integer)img[2],y + (Integer)img[3]);
+      for (String objName : Instance.images.keySet()) {
+         list.add(new Instance(objName, x, y));
          x += 32;
 
-         if (x > 600) {
+         if (x > 440) {
             x = 256;
             y += 32;
          }
@@ -125,8 +137,11 @@ public class Controller implements Initializable {
 
    @FXML
    public void codeAreaGoTo() {
+      TextInputDialog tid;
+
+      tid = new TextInputDialog(Integer.toString(code.getCurrentParagraph() + 1));
+      tid.setTitle("Goto Line");
       tid.setHeaderText("");
-      tid.getEditor().setText(Integer.toString(code.getCurrentParagraph()+1));
 
       Optional<String> result = tid.showAndWait();
 
@@ -138,9 +153,10 @@ public class Controller implements Initializable {
             pos = (pos < 1) ? 1 : pos;
             pos = (pos - 1 > code.getParagraphs().size()) ? code.getParagraphs().size() : pos;
 
-            code.moveTo(pos - 1, 0);
+            // might need to be changed
+            code.moveTo(pos - 1, 0, NavigationActions.SelectionPolicy.CLEAR);
          } catch (Exception e) {
-            // nothing dangerous should be caught here
+            // just do nothing if something goes wrong
          }
       }
 
@@ -148,7 +164,7 @@ public class Controller implements Initializable {
 
    @FXML
    private void exit() {
-      Stage stage = (Stage)img.getScene().getWindow();
+      Stage stage = (Stage) img.getScene().getWindow();
       stage.close();
    }
 }
