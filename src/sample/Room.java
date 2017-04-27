@@ -14,19 +14,30 @@ import java.util.Scanner;
  * Created by Gabriel on 2017/03/21.
  */
 public class Room {
+   private static Element ROOM_TEMPLATE;
+
    private String creationCode;
    private int width, height;
    private ArrayList<Instance> instances;
-
-   String toXML() {
-      return "";
-   }
 
    public Room() {
       creationCode = "";
       width = 800;
       height = 608;
       instances = new ArrayList<>();
+   }
+
+   public Element toXML() {
+      Element room = ROOM_TEMPLATE.clone();
+      Element child;
+      child = room.getChild("instances");
+
+      instances.forEach(instance -> {
+         instance.addAsElement(child);
+      });
+
+      child.addContent("\n    ");
+      return room;
    }
 
    public boolean addInstance(Instance obj) {
@@ -57,12 +68,10 @@ public class Room {
    }
 
    public void merge(Room room, int xOffset, int yOffset) {
-      for (Instance instance : room.instances) {
+      room.instances.forEach(instance -> {
          instance.move(xOffset, yOffset);
          addInstance(instance);
-
-      }
-
+      });
    }
 
    public void fromGMX(String fName) {
@@ -129,11 +138,21 @@ public class Room {
 
    public void clear() {
       instances.clear();
-      width = 800;
-      height = 608;
    }
 
    public ArrayList<Instance> getInstances() {
       return instances;
+   }
+
+   public static void initTemplate() {
+      SAXBuilder saxBuilder = new SAXBuilder();
+
+      try {
+         ROOM_TEMPLATE = saxBuilder.build(new File("RoomTemplate.xml")).getRootElement();
+      } catch (JDOMException e) {
+         e.printStackTrace();
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
    }
 }

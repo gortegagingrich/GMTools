@@ -11,7 +11,10 @@ import javafx.stage.Stage;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.NavigationActions;
+import org.jdom2.output.XMLOutputter;
 
+import javax.xml.stream.XMLOutputFactory;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -43,6 +46,7 @@ public class Controller implements Initializable {
    public void initialize(URL location, ResourceBundle resources) {
       Instance.init();
       initInstances();
+      Room.initTemplate();
 
       gc = img.getGraphicsContext2D();
       gc.setFill(Color.BLACK);
@@ -57,11 +61,13 @@ public class Controller implements Initializable {
       room = new Room();
       room.addFromJMAP("test.jmap");
 
+      updateText();
       resetCanvas();
       drawInstances();
       drawGrid();
 
       code.setParagraphGraphicFactory(LineNumberFactory.get(code));
+      code.setWrapText(false);
 
       newClear.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
 
@@ -110,29 +116,22 @@ public class Controller implements Initializable {
    }
 
    private void drawInstances() {
-
       room.getInstances().forEach(instance -> {
          instance.draw(gc);
       });
    }
 
    private void initInstances() {
-      int x, y;
+   }
 
-      list = new ArrayList<>();
+   @FXML
+   private void updateText() {
+      String text;
+      XMLOutputter xmOut = new XMLOutputter();
+      text = xmOut.outputString(room.toXML());
 
-      x = 256;
-      y = 256;
-
-      for (String objName : Instance.images.keySet()) {
-         list.add(new Instance(objName, x, y));
-         x += 32;
-
-         if (x > 440) {
-            x = 256;
-            y += 32;
-         }
-      }
+      code.clear();
+      code.insertText(0,0,text);
    }
 
    @FXML
@@ -165,6 +164,20 @@ public class Controller implements Initializable {
          }
       }
 
+   }
+
+   @FXML
+   private void clearInstances() {
+      room.clear();
+      resetCanvas();
+      drawGrid();
+      drawInstances();
+   }
+
+   @FXML
+   private void printXML() {
+      XMLOutputter xmOut = new XMLOutputter();
+      System.out.println(xmOut.outputString(room.toXML()));
    }
 
    @FXML

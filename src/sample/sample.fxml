@@ -51,12 +51,16 @@
 
                     </Menu>
 
-                    <Menu text="_Display">
+                    <Menu text="_Room">
                         <MenuItem text="_Refresh"/>
                         <MenuItem text="Reload _Images" onAction="#reloadImages"/>
                         <SeparatorMenuItem/>
                         <MenuItem text="Adjust _Grid..."/>
-                        <MenuItem text="Resize _Canvas..." onAction="#resizeDrawingCanvas"/>
+                        <MenuItem text="Resize Can_vas..." onAction="#resizeDrawingCanvas"/>
+                        <SeparatorMenuItem/>
+                        <MenuItem text="Print _XML" onAction="#printXML"/>
+                        <MenuItem text="_Update Code" onAction="#updateText"/>
+                        <MenuItem text="_Clear Instances" onAction="#clearInstances"/>
                     </Menu>
                 </MenuBar>
 
@@ -73,10 +77,6 @@
                 </AnchorPane>
             </VBox>
         </Tab>
-        <Tab>
-        </Tab>
-        <Tab text="+" closable="false" fx:id="plusTab">
-
-        </Tab>
+        <Tab text="+" closable="false" fx:id="plusTab"/>
     </TabPane>
 </AnchorPane>

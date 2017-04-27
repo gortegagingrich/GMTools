@@ -17,6 +17,7 @@ import java.util.HashMap;
  */
 public class Instance implements Comparable {
    public static HashMap<String, Object[]> images = null;
+   private static int instanceNumber = (int)(System.currentTimeMillis() / 100000);
 
    private double x,y;
    private double[] xArr, yArr;
@@ -77,6 +78,8 @@ public class Instance implements Comparable {
       this.itemName = itemName;
    }
 
+
+
    public void setPosition(double x, double y) {
       this.x = x;
       this.y = y;
@@ -97,6 +100,25 @@ public class Instance implements Comparable {
    public void move(int xOffset, int yOffset) {
       x += xOffset;
       y += yOffset;
+   }
+
+   public void addAsElement(Element parent) {
+      Element element = new Element("instance");
+
+      element.setName("instance")
+              .setAttribute("objName",itemName)
+              .setAttribute("x",String.format("%f",x))
+              .setAttribute("y",String.format("%f",y))
+              .setAttribute("name",String.format("inst_%d", instanceNumber++))
+              .setAttribute("locked","0")
+              .setAttribute("code",creationCode)
+              .setAttribute("scaleX",String.format("%f", xScale))
+              .setAttribute("scaleY",String.format("%f", yScale))
+              .setAttribute("colour","4294967295")
+              .setAttribute("rotation","0");
+
+      parent.addContent("\n        ");
+      parent.addContent(element);
    }
 
    public static void init() {
