@@ -20,6 +20,7 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable {
    private GraphicsContext gc;
    private ArrayList<Instance> list;
+   private Room room;
 
    @FXML
    private Canvas   img;
@@ -53,8 +54,11 @@ public class Controller implements Initializable {
          }
       });
 
+      room = new Room();
+      room.addFromJMAP("test.jmap");
+
       resetCanvas();
-      drawImages();
+      drawInstances();
       drawGrid();
 
       code.setParagraphGraphicFactory(LineNumberFactory.get(code));
@@ -102,11 +106,12 @@ public class Controller implements Initializable {
       Instance.init();
       resetCanvas();
       drawGrid();
-      drawImages();
+      drawInstances();
    }
 
-   private void drawImages() {
-      list.forEach(instance -> {
+   private void drawInstances() {
+
+      room.getInstances().forEach(instance -> {
          instance.draw(gc);
       });
    }

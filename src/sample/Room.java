@@ -5,8 +5,10 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Created by Gabriel on 2017/03/21.
@@ -18,6 +20,13 @@ public class Room {
 
    String toXML() {
       return "";
+   }
+
+   public Room() {
+      creationCode = "";
+      width = 800;
+      height = 608;
+      instances = new ArrayList<>();
    }
 
    public boolean addInstance(Instance obj) {
@@ -84,13 +93,47 @@ public class Room {
       }
    }
 
-   public void fromJMAP(String fName) {
+   public void addFromJMAP(String fName) {
+      File file = new File(fName);
+      String line, objName;
+      String[] lineContents;
+      Scanner scan = null;
+      try {
+         scan = new Scanner(file);
 
+         while (scan.hasNextLine()) {
+            line = scan.nextLine();
+
+            if (line.equals("objects: (x, y, type)")) {
+               line = scan.nextLine();
+               lineContents = line.split(" ");
+
+               for (int i = 0; lineContents != null && i < lineContents.length; i += 3) {
+                  objName = Instance.num2Name(lineContents[i+2]);
+                  if (objName != null) {
+                     instances.add(new Instance(objName, lineContents[i], lineContents[i+1]));
+                  }
+               }
+
+               break;
+            }
+         }
+      } catch (FileNotFoundException e) {
+         e.printStackTrace();
+      } finally {
+         if (scan != null) {
+            scan.close();
+         }
+      }
    }
 
    public void clear() {
       instances.clear();
       width = 800;
       height = 608;
+   }
+
+   public ArrayList<Instance> getInstances() {
+      return instances;
    }
 }

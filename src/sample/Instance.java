@@ -39,12 +39,8 @@ public class Instance implements Comparable {
       creationCode = "";
    }
 
-   /**
-    *
-    * @param str {objectID, X, Y}
-    */
-   public Instance(String[] str) {
-      this(str[0], Integer.parseInt(str[1]), Integer.parseInt(str[2]));
+   Instance(String itemName, String x, String y) {
+      this(itemName, Integer.parseInt(x), Integer.parseInt(y));
    }
 
    public Instance() {
@@ -56,23 +52,8 @@ public class Instance implements Comparable {
       if (images.containsKey(itemName)) { // if there is an image defined for this kind of instance
          Object[] img = images.get(itemName);
          gc.drawImage((Image)img[1], x + (Integer)img[2] * xScale, y + (Integer)img[3] * yScale, (Integer)img[4] * xScale, (Integer)img[5] * yScale);
-      } else { // if there is no image defined for this kind of instance
-         // keep track of previous stroke and fill values
-         Paint temp1 = gc.getFill();
-         Paint temp2 = gc.getStroke();
-
-         // draw fill
-         gc.setFill(color2);
-         gc.fillPolygon(xArr, yArr, yArr.length);
-
-         // draw outline
-         gc.setStroke(color1);
-         gc.strokePolygon(xArr, yArr, yArr.length);
-
-         // reset fill and stroke
-         gc.setFill(temp1);
-         gc.setStroke(temp2);
       }
+      // don't want to deal with polygons yet
    }
 
    private void setColors(Paint border, Paint fill) {
@@ -173,5 +154,82 @@ public class Instance implements Comparable {
       } catch (IOException e) {
          e.printStackTrace();
       }
+   }
+
+   public static String num2Name(String num) {
+      String out = null;
+
+      // assumes values have not changed since version 1.2.1
+      // I might just have these values mapped in an external file
+      switch (num) {
+         case "1":
+            out = "objBlock";
+            break;
+         case "2":
+            out = "objMiniBlock";
+            break;
+         case "3":
+            out = "objSpikeUp";
+            break;
+         case "4":
+            out = "objSpikeRight";
+            break;
+         case "5":
+            out = "objSpikeLeft";
+            break;
+         case "6":
+            out = "objSpikeDown";
+            break;
+         case "7":
+            out = "objMiniUp";
+            break;
+         case "8":
+            out = "objMiniRight";
+            break;
+         case "9":
+            out = "objMiniLeft";
+            break;
+         case "10":
+            out = "objMiniDown";
+            break;
+         case "11":
+            out = "objCherry";
+            break;
+         case "12":
+            out = "objSave";
+            break;
+         case "13":
+            out = "objMovingPlatform";
+            break;
+         case "14":
+            out = "objWater";
+            break;
+         case "15":
+            out = "objWater2";
+            break;
+         case "16":
+            out = "objWalljumpL";
+            break;
+         case "17":
+            out = "objWalljumpR";
+            break;
+         case "18":
+            out = "objKillerBlock";
+            break;
+         case "19":
+            out = "objBulletBlocker";
+            break;
+         case "20":
+            out = "objPlayerStart";
+            break;
+         case "21":
+            out = "objWarp";
+            break;
+
+         default:
+            System.err.printf("Object with id %s is not supported\n", num);
+      }
+
+      return out;
    }
 }
