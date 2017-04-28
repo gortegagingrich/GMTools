@@ -1,20 +1,7 @@
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.canvas.Canvas?>
-
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import org.fxmisc.richtext.CodeArea?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.Menu?>
-
-<?import javafx.scene.layout.VBox?>
-
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.Tab?>
-
-<?import javafx.scene.layout.AnchorPane?>
-
 <AnchorPane fx:controller="Controller"
             xmlns:fx="http://javafx.com/fxml" >
 

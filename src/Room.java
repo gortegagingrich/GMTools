@@ -12,13 +12,13 @@ import java.util.Scanner;
 /**
  * Created by Gabriel on 2017/03/21.
  */
-@SuppressWarnings("ALL")
+@SuppressWarnings("DefaultFileTemplate")
 public class Room {
 	private static Element ROOM_TEMPLATE;
 
 	private String creationCode;
 	private int width, height;
-	private ArrayList<Instance> instances;
+	private final ArrayList<Instance> instances;
 
 	public enum Source {
 		JMAP, XML
@@ -31,11 +31,20 @@ public class Room {
 		instances = new ArrayList<>();
 	}
 
+	/**
+	 * Creates a copy of template room.
+	 * Then adds contents of room to that copy and returns it.
+	 *
+	 * @return Element representing the contents of the room
+	 */
 	public Element toXML() {
-		Element room = ROOM_TEMPLATE.clone();
+		Element room;
 		Element child;
+
+		room = ROOM_TEMPLATE.clone();
 		child = room.getChild("instances");
 
+		//noinspection CodeBlock2Expr
 		instances.forEach(instance -> {
 			instance.addAsElement(child);
 		});
@@ -44,33 +53,60 @@ public class Room {
 		return room;
 	}
 
-	public boolean addInstance(Instance obj) {
-		return instances.add(obj);
+	/**
+	 * Adds the given instance to the room
+	 *
+	 * @param instance Instance object to be added
+	 */
+	public void addInstance(Instance instance) {
+		instances.add(instance);
 	}
 
-	public boolean removeInstance(Instance obj) {
-		return instances.remove(obj);
-	}
-
-	public boolean addTile() {
+	/**
+	 * I might eventually allow for tiling.
+	 * Currently does nothing.
+	 */
+	@SuppressWarnings("SameReturnValue")
+	public void addTile() {
 		System.err.println("This is not supported");
-		return false;
 	}
 
-	public boolean removeTile() {
+	/**
+	 * I might eventually allow for tiling.
+	 * Currently does nothing.
+	 */
+	@SuppressWarnings("SameReturnValue")
+	public void removeTile() {
 		System.err.println("This is not supported");
-		return false;
 	}
 
+	/**
+	 * Sets room's creation code.
+	 *
+	 * @param str Contents of creation code
+	 */
 	public void setCreationCode(String str) {
 		creationCode = str;
 	}
 
+	/**
+	 * Changes the room's size.
+	 *
+	 * @param width Width of the room in pixels
+	 * @param height Height of the room in pixels
+	 */
 	public void setSize(int width, int height) {
 		this.width = width;
 		this.height = height;
 	}
 
+	/**
+	 * Adds contents of given room at given offsets.
+	 *
+	 * @param room Room to be added
+	 * @param xOffset Horizontal offset for all Instances.
+	 * @param yOffset Vertical offset for all Instances.
+	 */
 	public void merge(Room room, int xOffset, int yOffset) {
 		room.instances.forEach(instance -> {
 			instance.move(xOffset, yOffset);
@@ -78,6 +114,12 @@ public class Room {
 		});
 	}
 
+	/**
+	 * Clears instances.  Then parses given String as XML and adds contents.
+	 * Used to update the room from the code area in the GUI.
+	 *
+	 * @param xml XML representation of room
+	 */
 	public void setFromXMLString(String xml) {
 		instances.clear();
 		SAXBuilder builder = new SAXBuilder();
@@ -91,10 +133,23 @@ public class Room {
 		}
 	}
 
+	/**
+	 * Parses given file as XML representation of room and adds contents.
+	 *
+	 * @param fName File containing XML representation
+	 */
 	public void addFromXML(String fName) {
 		addFromXML(fName, 0, 0);
 	}
 
+	/**
+	 * Parses given file as XML representation of room and adds contents at given offsets.
+	 *
+	 * @param fName File containing XML representation
+	 * @param xOffset Horizontal offset for new Instances
+	 * @param yOffset Vertical offset for new Instances
+	 */
+	@SuppressWarnings("SameParameterValue")
 	public void addFromXML(String fName, double xOffset, double yOffset) {
 		Instance toAdd;
 		Element room;
@@ -109,6 +164,13 @@ public class Room {
 		}
 	}
 
+	/**
+	 * Adds each child in given Element's "instances" child as an Instance with given offset.
+	 *
+	 * @param room XML element containing Instances to be added
+	 * @param xOffset Horizontal offset for new Instances
+	 * @param yOffset Vertical offset for new Instances
+	 */
 	private void parseRoomElement(Element room, double xOffset, double yOffset) {
 		Instance toAdd;
 
@@ -118,7 +180,7 @@ public class Room {
 			toAdd.setCreationCode(child.getAttributeValue("code"));
 			toAdd.setXScale(Double.parseDouble(child.getAttributeValue("scaleX")));
 			toAdd.setYScale(Double.parseDouble(child.getAttributeValue("scaleY")));
-			toAdd.setItemName(child.getAttributeValue("objName"));
+			toAdd.setObjName(child.getAttributeValue("objName"));
 			toAdd.setPosition(xOffset + Double.parseDouble(child.getAttributeValue("x")),
 					  yOffset + Double.parseDouble(child.getAttributeValue("y")));
 
@@ -126,11 +188,23 @@ public class Room {
 		}
 	}
 
+	/**
+	 * Adds contents of given JMAP file.
+	 *
+	 * @param fName JMAP file to add
+	 */
 	public void addFromJMAP(String fName) {
 		addFromJMAP(fName, 0, 0);
 	}
 
-	@SuppressWarnings("ConstantConditions")
+	/**
+	 * Adds contents of given JMAP file with given offsets
+	 *
+	 * @param fName JMAP file to add
+	 * @param xOffset Horizontal offset for new Instances
+	 * @param yOffset Vertical offset for new Instances
+	 */
+	@SuppressWarnings({"ConstantConditions", "SameParameterValue"})
 	public void addFromJMAP(String fName, double xOffset, double yOffset) {
 		File file = new File(fName);
 		String line, objName;
@@ -170,14 +244,25 @@ public class Room {
 		}
 	}
 
+	/**
+	 * Removes all instances.
+	 */
 	public void clear() {
 		instances.clear();
 	}
 
+	/**
+	 * Returns an ArrayList containing all instances
+	 *
+	 * @return copy of instances
+	 */
 	public ArrayList<Instance> getInstances() {
-		return instances;
+		return (ArrayList<Instance>)instances.clone();
 	}
 
+	/**
+	 * Initializes ROOM_TEMPLATE using file RoomTemplate.xml
+	 */
 	public static void initTemplate() {
 		SAXBuilder saxBuilder = new SAXBuilder();
 

@@ -1,6 +1,5 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Paint;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
@@ -20,11 +19,19 @@ public class Instance implements Comparable {
    private double x,y;
    private double xScale, yScale;
    private int    depth;
-   private String itemName;
+   private String objName;
    private String creationCode;
 
-   public Instance(String itemName, int x, int y) {
-      this.itemName = itemName;
+	/**
+	 * Creates instance at given position
+	 * Initializes depth to 0, xScale and yScale to 1, and creationCode to ""
+	 *
+	 * @param objName Instance type's name
+	 * @param x X position of Instance in room.
+	 * @param y Y position of instance in room.
+	 */
+   public Instance(String objName, int x, int y) {
+      this.objName = objName;
       this.x = x;
       this.y = y;
 
@@ -34,18 +41,34 @@ public class Instance implements Comparable {
       creationCode = "";
    }
 
-   Instance(String itemName, String x, String y) {
-      this(itemName, Integer.parseInt(x), Integer.parseInt(y));
+	/**
+	 * Creates instance at given position
+	 * Initializes depth to 0, xScale and yScale to 1, and creationCode to ""
+	 *
+	 * @param objName Instance type's name
+	 * @param x X position of Instance in room.
+	 * @param y Y position of instance in room.
+	 */
+   Instance(String objName, String x, String y) {
+      this(objName, Integer.parseInt(x), Integer.parseInt(y));
    }
 
-   public Instance() {
+	/**
+	 * Creates "blank" Instance at (0,0)
+	 */
+	public Instance() {
       this("",0,0);
    }
 
-   public void draw(GraphicsContext gc) {
+	/**
+	 * Draw's Instance type's corresponding sprites at Instance's position
+	 *
+	 * @param gc GraphicsContext of canvas Instance will be drawn to.
+	 */
+	public void draw(GraphicsContext gc) {
 
-      if (images.containsKey(itemName)) { // if there is an image defined for this kind of instance
-         Object[] img = images.get(itemName);
+      if (images.containsKey(objName)) { // if there is an image defined for this kind of instance
+         Object[] img = images.get(objName);
          gc.drawImage((Image)img[1], x + (Integer)img[2] * xScale, y + (Integer)img[3] * yScale, (Integer)img[4] * xScale, (Integer)img[5] * yScale);
       }
       // don't want to deal with polygons yet
@@ -63,37 +86,59 @@ public class Instance implements Comparable {
       this.creationCode = code;
    }
 
-   public void setItemName(String itemName) {
-      this.itemName = itemName;
+   public void setObjName(String objName) {
+      this.objName = objName;
    }
-
-
 
    public void setPosition(double x, double y) {
       this.x = x;
       this.y = y;
    }
 
-   @Override
-   public int compareTo(Object i) {
-      return Integer.compare(this.depth, ((Instance)i).depth);
+	/**
+	 * Casts given Object as Instance and compares based on depth.
+	 *
+	 * @param instance Instance to compare to
+	 * @return Result of comparing depths as Integers
+	 */
+	@Override
+   public int compareTo(Object instance) {
+      return Integer.compare(this.depth, ((Instance)instance).depth);
    }
 
-   @Override
+	/**
+	 * Currently not implemented.
+	 *
+	 * @return Empty String
+	 */
+	@Override
    public String toString() {
       return "";
    }
 
-   public void move(double xOffset, double yOffset) {
+	/**
+	 * Moves Instance given amount.
+	 * (x,y) -> (x + xOffset, y + yOffset)
+	 *
+	 * @param xOffset Horizontal offset
+	 * @param yOffset Vertical offset
+	 */
+	public void move(double xOffset, double yOffset) {
       x += xOffset;
       y += yOffset;
    }
 
-   public void addAsElement(Element parent) {
+	/**
+	 * Adds this Instance to given Element as a child element.
+	 * Inserted as child of "instances" Element.
+	 *
+	 * @param room Room element this should be added to.
+	 */
+	public void addAsElement(Element room) {
       Element element = new Element("instance");
 
       element.setName("instance")
-              .setAttribute("objName",itemName)
+              .setAttribute("objName", objName)
               .setAttribute("x",String.format("%f",x))
               .setAttribute("y",String.format("%f",y))
               .setAttribute("name",String.format("inst_%d", instanceNumber++))
@@ -104,11 +149,16 @@ public class Instance implements Comparable {
               .setAttribute("colour","4294967295")
               .setAttribute("rotation","0");
 
-      parent.addContent("\n        ");
-      parent.addContent(element);
+      room.addContent("\n        ");
+      room.addContent(element);
    }
 
-   public static void init() {
+	/**
+	 * Initializes Instance.images
+	 * Parses SpriteInfo.xml to map specified Instance names to specified Images
+	 * Only neesd to be called once.
+	 */
+	public static void initImages() {
       Element imageInfo;
       SAXBuilder builder = new SAXBuilder();
 
@@ -163,7 +213,16 @@ public class Instance implements Comparable {
       }
    }
 
-   public static String num2Name(String num) {
+	/**
+	 * Converts object ID read from JMAP file to an Instance name.
+	 * Based on format of JTool 1.2.1.
+	 * Does not support unnecessary types of objects
+	 *
+	 * @param num "[0-9]+"
+	 * @return If num is valid, returns corresponding Instance name.
+	 *         Otherwise, returns null.
+	 */
+	public static String num2Name(String num) {
       String out = null;
 
       // assumes values have not changed since version 1.2.1

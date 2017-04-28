@@ -1,4 +1,3 @@
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -13,13 +12,11 @@ import org.fxmisc.richtext.model.NavigationActions;
 import org.jdom2.output.XMLOutputter;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
    private GraphicsContext gc;
-   private ArrayList<Instance> list;
    private Room room = null;
 
    @FXML
@@ -37,8 +34,7 @@ public class Controller implements Initializable {
 
    @Override
    public void initialize(URL location, ResourceBundle resources) {
-      Instance.init();
-      initInstances();
+      Instance.initImages();
       Room.initTemplate();
       initCanvas();
 
@@ -96,26 +92,26 @@ public class Controller implements Initializable {
 
    @FXML
    private void reloadImages() {
-      Instance.init();
+      Instance.initImages();
       resetCanvas();
       drawGrid();
       drawInstances();
    }
 
    private void drawInstances() {
-      room.getInstances().forEach(instance -> {
+	   //noinspection CodeBlock2Expr
+	   room.getInstances().forEach(instance -> {
          instance.draw(gc);
       });
-   }
-
-   private void initInstances() {
    }
 
    @FXML
    private void updateText() {
       String text;
-      XMLOutputter xmOut = new XMLOutputter();
-      text = xmOut.outputString(room.toXML());
+      XMLOutputter xmOut;
+
+	   xmOut = new XMLOutputter();
+	   text = xmOut.outputString(room.toXML());
 
       code.clear();
       code.insertText(0,0,text);
@@ -129,16 +125,19 @@ public class Controller implements Initializable {
    @FXML
    public void codeAreaGoTo() {
       TextInputDialog tid;
+	   Optional<String> result;
 
       tid = new TextInputDialog(Integer.toString(code.getCurrentParagraph() + 1));
       tid.setTitle("Goto Line");
       tid.setHeaderText("");
 
-      Optional<String> result = tid.showAndWait();
+	   result = tid.showAndWait();
 
-      result.ifPresent(s -> {
+	   result.ifPresent(s -> {
+      	int pos;
+
          try {
-            int pos = Integer.parseInt(s);
+            pos = Integer.parseInt(s);
 
             // make sure position is within bounds
             pos = (pos < 1) ? 1 : pos;
@@ -191,18 +190,14 @@ public class Controller implements Initializable {
    }
 
    @FXML
-   private void printXML() {
-      XMLOutputter xmOut = new XMLOutputter();
-      System.out.println(xmOut.outputString(room.toXML()));
-   }
-
-   @FXML
    private void exit() {
-      Stage stage = (Stage) img.getScene().getWindow();
-      stage.close();
+      Stage stage;
+
+	   stage = (Stage) img.getScene().getWindow();
+	   stage.close();
    }
 
-   public void readCode(ActionEvent actionEvent) {
+   public void readCode() {
       room.setFromXMLString(code.getText());
       refresh();
    }
