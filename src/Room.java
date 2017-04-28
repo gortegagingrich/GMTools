@@ -1,5 +1,3 @@
-package sample;
-
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
@@ -7,6 +5,7 @@ import org.jdom2.input.SAXBuilder;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -19,6 +18,10 @@ public class Room {
    private String creationCode;
    private int width, height;
    private ArrayList<Instance> instances;
+
+   public static enum Source {
+      JMAP, XML
+   }
 
    public Room() {
       creationCode = "";
@@ -74,7 +77,26 @@ public class Room {
       });
    }
 
-   public void fromGMX(String fName) {
+   public void setFromXMLString(String xml) {
+      instances.clear();
+      SAXBuilder builder = new SAXBuilder();
+      Element root;
+
+      try {
+         root = builder.build(new StringReader(xml)).getRootElement();
+         parseRoomElement(root, 0, 0);
+      } catch (JDOMException e) {
+         e.printStackTrace();
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+   }
+
+   public void addFromXML(String fName) {
+      addFromXML(fName, 0, 0);
+   }
+
+   public void addFromXML(String fName, double xOffset, double yOffset) {
       Instance toAdd;
       Element room;
 
@@ -82,31 +104,40 @@ public class Room {
 
       try {
          room = builder.build(new File(fName)).getRootElement();
-
-         // add instances from GMX
-         for (Element child : room.getChild("instances").getChildren()) {
-            toAdd = new Instance();
-            toAdd.setCreationCode(child.getAttributeValue("code"));
-            toAdd.setXScale(Double.parseDouble(child.getAttributeValue("scaleX")));
-            toAdd.setYScale(Double.parseDouble(child.getAttributeValue("scaleY")));
-            toAdd.setItemName(child.getAttributeValue("objName"));
-            toAdd.setPosition(Double.parseDouble(child.getAttributeValue("x")),
-                    Double.parseDouble(child.getAttributeValue("y")));
-
-            instances.add(toAdd);
-         }
-
-
+         parseRoomElement(room,xOffset,yOffset);
       } catch (IOException | JDOMException e) {
          // should not mean anything particularly bad
       }
    }
 
+   private void parseRoomElement(Element room, double xOffset, double yOffset) {
+      Instance toAdd;
+
+      // add instances from GMX
+      for (Element child : room.getChild("instances").getChildren()) {
+         toAdd = new Instance();
+         toAdd.setCreationCode(child.getAttributeValue("code"));
+         toAdd.setXScale(Double.parseDouble(child.getAttributeValue("scaleX")));
+         toAdd.setYScale(Double.parseDouble(child.getAttributeValue("scaleY")));
+         toAdd.setItemName(child.getAttributeValue("objName"));
+         toAdd.setPosition(xOffset + Double.parseDouble(child.getAttributeValue("x")),
+                 yOffset + Double.parseDouble(child.getAttributeValue("y")));
+
+         instances.add(toAdd);
+      }
+   }
+
    public void addFromJMAP(String fName) {
+      addFromJMAP(fName, 0, 0);
+   }
+
+   public void addFromJMAP(String fName, double xOffset, double yOffset) {
       File file = new File(fName);
       String line, objName;
       String[] lineContents;
       Scanner scan = null;
+      Instance instance;
+
       try {
          scan = new Scanner(file);
 
@@ -120,7 +151,9 @@ public class Room {
                for (int i = 0; lineContents != null && i < lineContents.length; i += 3) {
                   objName = Instance.num2Name(lineContents[i+2]);
                   if (objName != null) {
-                     instances.add(new Instance(objName, lineContents[i], lineContents[i+1]));
+                     instance = new Instance(objName, lineContents[i], lineContents[i+1]);
+                     instance.move(xOffset, yOffset);
+                     instances.add(instance);
                   }
                }
 

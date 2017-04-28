@@ -1,6 +1,3 @@
-package sample;
-
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
@@ -97,7 +94,7 @@ public class Instance implements Comparable {
       return out;
    }
 
-   public void move(int xOffset, int yOffset) {
+   public void move(double xOffset, double yOffset) {
       x += xOffset;
       y += yOffset;
    }

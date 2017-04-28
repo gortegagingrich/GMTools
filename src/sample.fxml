@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.geometry.Insets?>
 
-<AnchorPane fx:controller="sample.Controller"
+<AnchorPane fx:controller="Controller"
             xmlns:fx="http://javafx.com/fxml" >
 
     <TabPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
@@ -58,9 +58,9 @@
                         <MenuItem text="Adjust _Grid..."/>
                         <MenuItem text="Resize Can_vas..." onAction="#resizeDrawingCanvas"/>
                         <SeparatorMenuItem/>
-                        <MenuItem text="Print _XML" onAction="#printXML"/>
-                        <MenuItem text="_Update Code" onAction="#updateText"/>
-                        <MenuItem text="_Clear Instances" onAction="#clearInstances"/>
+                        <MenuItem text="Reset _Code" onAction="#updateText"/>
+                        <MenuItem text="Read Code Co_de" onAction="#readCode"/>
+                        <MenuItem text="C_lear Instances" onAction="#clearInstances"/>
                     </Menu>
                 </MenuBar>
 

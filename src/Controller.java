@@ -1,5 +1,4 @@
-package sample;
-
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -13,8 +12,6 @@ import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.NavigationActions;
 import org.jdom2.output.XMLOutputter;
 
-import javax.xml.stream.XMLOutputFactory;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -23,7 +20,7 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable {
    private GraphicsContext gc;
    private ArrayList<Instance> list;
-   private Room room;
+   private Room room = null;
 
    @FXML
    private Canvas   img;
@@ -47,9 +44,7 @@ public class Controller implements Initializable {
       Instance.init();
       initInstances();
       Room.initTemplate();
-
-      gc = img.getGraphicsContext2D();
-      gc.setFill(Color.BLACK);
+      initCanvas();
 
       // make sure it only pans with middle mouse button
       img.addEventHandler(MouseEvent.ANY, event -> {
@@ -58,19 +53,12 @@ public class Controller implements Initializable {
          }
       });
 
-      room = new Room();
-      room.addFromJMAP("test.jmap");
-
-      updateText();
-      resetCanvas();
-      drawInstances();
-      drawGrid();
+      setRoom("test.jmap",Room.Source.JMAP);
 
       code.setParagraphGraphicFactory(LineNumberFactory.get(code));
       code.setWrapText(false);
 
       newClear.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
-
       gotoItem.setAccelerator(new KeyCodeCombination(KeyCode.G, KeyCombination.CONTROL_DOWN));
 
       tabPane.getSelectionModel()
@@ -84,6 +72,9 @@ public class Controller implements Initializable {
                     tabPane.getSelectionModel().select(tab);
                  }
               });
+
+      updateText();
+      refresh();
    }
 
    private void resetCanvas() {
@@ -166,6 +157,34 @@ public class Controller implements Initializable {
 
    }
 
+   private void initCanvas() {
+      gc = img.getGraphicsContext2D();
+      gc.setFill(Color.BLACK);
+   }
+
+   private void refresh() {
+      resetCanvas();
+      drawInstances();
+      drawGrid();
+   }
+
+   private void setRoom(String str, Room.Source source) {
+      if (room == null) {
+         room = new Room();
+      } else {
+         room.clear();
+      }
+
+      switch (source) {
+         case JMAP:
+            room.addFromJMAP(str);
+            break;
+         case XML:
+            room.addFromXML(str);
+            break;
+      }
+   }
+
    @FXML
    private void clearInstances() {
       room.clear();
@@ -184,5 +203,10 @@ public class Controller implements Initializable {
    private void exit() {
       Stage stage = (Stage) img.getScene().getWindow();
       stage.close();
+   }
+
+   public void readCode(ActionEvent actionEvent) {
+      room.setFromXMLString(code.getText());
+      refresh();
    }
 }
