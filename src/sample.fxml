@@ -14,7 +14,6 @@
 <?import javafx.scene.control.Tab?>
 
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.geometry.Insets?>
 
 <AnchorPane fx:controller="Controller"
             xmlns:fx="http://javafx.com/fxml" >
@@ -22,7 +21,6 @@
     <TabPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
              AnchorPane.topAnchor="0" fx:id="tabPane">
         <VBox.margin>
-            <Insets bottom="0"/>
         </VBox.margin>
         <Tab text="Room Editor">
             <VBox>
@@ -43,7 +41,7 @@
                         </Menu>
 
                         <SeparatorMenuItem/>
-                        <MenuItem text="E_xit" fx:id="exit" onAction="#exit"/>
+                        <MenuItem text="E_xit" onAction="#exit"/>
                     </Menu>
 
                     <Menu text="_Edit">

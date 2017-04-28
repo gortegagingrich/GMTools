@@ -12,14 +12,13 @@ import java.util.HashMap;
 /**
  * Created by Gabriel on 2017/03/21.
  */
+@SuppressWarnings("ALL")
 public class Instance implements Comparable {
    public static HashMap<String, Object[]> images = null;
    private static int instanceNumber = (int)(System.currentTimeMillis() / 100000);
 
    private double x,y;
-   private double[] xArr, yArr;
    private double xScale, yScale;
-   private Paint color1, color2;
    private int    depth;
    private String itemName;
    private String creationCode;
@@ -30,8 +29,6 @@ public class Instance implements Comparable {
       this.y = y;
 
       depth = 0;
-      xArr = null;
-      yArr = null;
       xScale = 1;
       yScale = 1;
       creationCode = "";
@@ -52,11 +49,6 @@ public class Instance implements Comparable {
          gc.drawImage((Image)img[1], x + (Integer)img[2] * xScale, y + (Integer)img[3] * yScale, (Integer)img[4] * xScale, (Integer)img[5] * yScale);
       }
       // don't want to deal with polygons yet
-   }
-
-   private void setColors(Paint border, Paint fill) {
-      color1 = border;
-      color2 = fill;
    }
 
    public void setXScale(double xScale) {
@@ -89,9 +81,7 @@ public class Instance implements Comparable {
 
    @Override
    public String toString() {
-      String out = "";
-
-      return out;
+      return "";
    }
 
    public void move(double xOffset, double yOffset) {
@@ -168,9 +158,7 @@ public class Instance implements Comparable {
 
             images.put(str,new Object[] {path, img, xOffset, yOffset, width, height});
          });
-      } catch (JDOMException e) {
-         e.printStackTrace();
-      } catch (IOException e) {
+      } catch (JDOMException | IOException e) {
          e.printStackTrace();
       }
    }

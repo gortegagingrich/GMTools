@@ -27,11 +27,7 @@ public class Controller implements Initializable {
    @FXML
    private CodeArea code;
    @FXML
-   private MenuBar  menubar;
-   @FXML
    private MenuItem newClear;
-   @FXML
-   private MenuItem exit;
    @FXML
    private MenuItem gotoItem;
    @FXML
@@ -140,9 +136,9 @@ public class Controller implements Initializable {
 
       Optional<String> result = tid.showAndWait();
 
-      if (result.isPresent()) {
+      result.ifPresent(s -> {
          try {
-            int pos = Integer.parseInt(result.get());
+            int pos = Integer.parseInt(s);
 
             // make sure position is within bounds
             pos = (pos < 1) ? 1 : pos;
@@ -153,7 +149,7 @@ public class Controller implements Initializable {
          } catch (Exception e) {
             // just do nothing if something goes wrong
          }
-      }
+      });
 
    }
 
@@ -168,6 +164,7 @@ public class Controller implements Initializable {
       drawGrid();
    }
 
+   @SuppressWarnings("SameParameterValue")
    private void setRoom(String str, Room.Source source) {
       if (room == null) {
          room = new Room();
